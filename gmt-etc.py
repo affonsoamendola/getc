@@ -4,51 +4,73 @@
 #GMT Exposure Time Calculator
 
 import numpy as np
+import pysymphot as symphot
 
 class Field:
 	def __init__(self, resolution, sizeX, sizeY):
-		#initializes field object, with an array of size/resolution on x and y, everything in arcmin 
+		#initializes field object, with an array of size/resolution on x and y
+		#[resolution] = pixels/arcmin
+		#[sizeX] and [sizeY] = arcmin
+
 		self.resolution = resolution
 		self.sizeX = sizeX
 		self.sizeY = sizeY
 
-		self.lengthX = int(sizeX/resolution)
-		self.lengthY = int(sizeY/resolution)
+		self.count_table = {} 
 
-		self.flux = np.array(np.empty((self.lengthX, self.lengthY))) 
+		self.lengthX = int(resolution*sizeX)
+		self.lengthY = int(resolution*sizeY)
 
-	def make_gaussian(self, posX, posY, fwhm, height):
-		
-		for i in range(self.lengthX):
-			for j in range(self.lengthY):
+	#end __init__
 
-				self.flux[i][j] = height * np.exp( (-4.) * np.log(2.) * ((float(i)-posX)**2.+(float(j)-posY)**2.)  / fwhm**2.  )
+	def create_gaussian_star(self, posX, posY, fwhm, spectrum):
+		# [spectrum] = Pysynphot Source Object
+		# [posX]. [posY] = pixel position (int)
+		# 
+		# Convolves a gaussian bidimensional image with a template spectrum, basically
+		# the star with that spectrum at (posX, posY) in the field.
+		# 
+		# I think thats how it works...
 
-OBSERVATION_MODE_IMAGING = 0
-OBSERVATION_MODE_SPECTROSCOPY = 1
+		gaussian_image = create_gaussian(self.lengthX, self.lengthY, posX, posY, fwhm, 1.)
 
-SOURCE_TYPE_POINT = 0
-SOURCE_TYPE_EXTENDED = 1
+		for wavelength in spectrum.wave:
+			count_table[wavelength] = gaussian_image*spectrum.sample(wavelength)
 
-def count_per_res(	observation_mode, source_type, incident_flux, filter_band_width, 
-				  	exposure_time, efficiency, telescope_surface, photon_energy):	
-	if(observation_mode == OBSERVATION_MODE_IMAGING):
-		if(source_type == SOURCE_TYPE_POINT):
-			N = (incident_flux*filter_band_width*exposure_time*efficiency*telescope_surface)/photon_energy
-			return N
-	#elif(observation_mode == OBSERVATION_MODE_SPECTROSCOPY):
+
+	#end create_gaussian_star
+
+	def get_counts_at(self, posX, posY):
+
+	#end get_counts_at
+
+	def create_gaussian(self, sizeX, sizeY, posX, posY, fwhm, height):
+		distribution = np.array(np.zeros((sizeX, sizeY)))
+		#creates a 2d gaussian distribution with fwhm and height on the field, at the pos(x,y).
+		for i in range(sizeX):
+			for j in range(sizeY):
+
+				distribution[i][j] = height * np.exp( (-4.) * np.log(2.) * ((float(i)-posX)**2.+(float(j)-posY)**2.)  / fwhm**2.  )
+	#end make_gaussian
+
+def count_per_res_element(	field, filter
+				  			exposure_time, efficiency, telescope_surface, photon_energy):
+	
+
+#end count_per_res
 
 def out_matrix_file(filename, matrix):
+
 	f = open(filename, "w")
-	for i in range(len(matrix)):
-		for j in range(len(matrix[i])):
-			f.write(str(matrix[i][j]))
+
+	for i in range( len(matrix) ):
+		for j in range( len(matrix[i]) ):
+
+			f.write( str(matrix[i][j]) )
 			f.write(" ")
+
 		f.write("\n")
 
-field = Field(0.1, 10, 10)
-field.make_gaussian(10.,10.,1.,100.)
-
-out_matrix_file("matrixout.txt", field.flux)
+#end out_matrix_file
 
 
