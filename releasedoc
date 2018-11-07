@@ -1,0 +1,22 @@
+Exposure Time Calculator for the Giant Magellan Telescope (GMT-ETC)
+Release Document
+
+Affonso Gino Amendola Neto (IAG-USP)
+
+affonso.gino.neto@usp.br
+https://github.com/affonsoamendola/gmt-etc
+
+Distributed under GPLv3 License, check the LICENSE file for more info.
+----------------------------------------
+
+This software was created to assist with the observations made in the now under construction Giant Magellan Telescope.
+
+By supplying the flux of the object, the conditions in which the object will be observed, and the exposure time, you can obtain an expected value for the Signal to Noise ratio (SNR), these variables are all interconnected, so if you have the actual or desired values for 3 of them, you can obtain an expected or needed value for the 4th one.
+
+In this specific software, those variables are supplied to the program via parameters to the python script, so that it can easily interact with other software via Bash scripts and the like.
+
+The output is tabular, either writing to a file on disk, or simply to the python standard output.
+
+An important part of this software that will be better described in the design document is the modular nature of each individual simulated part of the telescope, so that the effects of changing the optics can be seen in the results of the ETC.
+
+This last part is different with regards of how it is accessed, while the variables of the observation are easily changable just by supplying different parameters to the script, this part is accessed by changing the python source code directly.

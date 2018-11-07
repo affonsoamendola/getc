@@ -1,0 +1,28 @@
+Exposure Time Calculator for the Giant Magellan Telescope (GMT-ETC)
+Design Document
+
+Affonso Gino Amendola Neto (IAG-USP)
+
+affonso.gino.neto@usp.br
+https://github.com/affonsoamendola/gmt-etc
+
+Distributed under GPLv3 License, check the LICENSE file for more info.
+----------------------------------------
+
+GMT-ETC is supposed to receive parameters regarding 3 different aspects of an observation, and return a 4th one derived from the 3 aspects that were "locked down", those aspects are:
+
+*Object Flux (Units are irrelevant, internally the software will use photon counts as flux, as long as the software knows what is the unit you are supplying, and the software knows how to convert from those units to photon counts, it should be okay.)
+
+*Observation Conditions (Multiple variables go into this aspect and some are only variable as an experiment, from the atmospheric conditions to the optical design of the telescope itself, and as such not locking this down would be problematic, it should be possible to derive desired values for one or two of these variables while the other 3 aspects are locked down)
+---Airmass
+---Moon Brightness
+---Optical Efficiency
+---CCD related noise
+
+*Exposure Time (in seconds, Most likely this will be the aspect/variable that won't be locked down, since this is the most easily alterable variable while observing an object, you can't really do anything about the atmosphere or the brightness of the moon and you need a desirable value of SNR to be able to do science, this is really the only variable an observer can do anything about, so far at least.)
+
+*Signal to Noise Ratio (This is most likely going to be an *desired* value of SNR if supplied, so that you can obtain an exposure time that will supply said value of SNR, or the flux of the dimmest star that can be observed with Xsecs exposure time but still having an SNR of Y)
+
+----------------------------------------
+
+
