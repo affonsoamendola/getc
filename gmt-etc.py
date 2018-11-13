@@ -6,6 +6,15 @@
 import numpy as np
 import pysymphot as symphot
 
+class OpticalElement:
+	def __init__(self, opticalResponseFilename):
+		self.opticalResponse = parseOpticalResponseFile(opticalResponseFilename)
+
+	def receiveLight(self, receivedField):
+		self.field = Field(receivedField.resolution, receivedField.sizeX, receivedField.sizeY)
+
+
+
 class Field:
 	def __init__(self, resolution, sizeX, sizeY):
 		#initializes field object, with an array of size/resolution on x and y
@@ -20,7 +29,6 @@ class Field:
 
 		self.lengthX = int(resolution*sizeX)
 		self.lengthY = int(resolution*sizeY)
-
 	#end __init__
 
 	def create_gaussian_star(self, posX, posY, fwhm, spectrum):
@@ -36,13 +44,7 @@ class Field:
 
 		for wavelength in spectrum.wave:
 			count_table[wavelength] = gaussian_image*spectrum.sample(wavelength)
-
-
 	#end create_gaussian_star
-
-	def get_counts_at(self, posX, posY):
-
-	#end get_counts_at
 
 	def create_gaussian(self, sizeX, sizeY, posX, posY, fwhm, height):
 		distribution = np.array(np.zeros((sizeX, sizeY)))
@@ -52,25 +54,4 @@ class Field:
 
 				distribution[i][j] = height * np.exp( (-4.) * np.log(2.) * ((float(i)-posX)**2.+(float(j)-posY)**2.)  / fwhm**2.  )
 	#end make_gaussian
-
-def count_per_res_element(	field, filter
-				  			exposure_time, efficiency, telescope_surface, photon_energy):
-	
-
-#end count_per_res
-
-def out_matrix_file(filename, matrix):
-
-	f = open(filename, "w")
-
-	for i in range( len(matrix) ):
-		for j in range( len(matrix[i]) ):
-
-			f.write( str(matrix[i][j]) )
-			f.write(" ")
-
-		f.write("\n")
-
-#end out_matrix_file
-
 

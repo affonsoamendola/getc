@@ -27,7 +27,7 @@ GMT-ETC is supposed to receive parameters regarding 3 different aspects of an ob
 
 The software is supposed to be modular, simulating the effects of each of the individual parts that form the telescope on the variables, the idea is to make it so modular that you can experiment with the optical design, or even simulate other telescopes (maybe in the future, make a completely generic ETC)
 
-Implementing this modularity should make use of the Object Oriented Nature of python, defining each optical element as generically as possible, making use of polymorphism where possible.
+Implementing this modularity should make use of the Object Oriented Nature of python, defining each optical element as generically as possible, making use of polymorphism where applicable.
 
 The optical magic that happens in a telescope usually follows the following order:
 
@@ -35,4 +35,7 @@ The light enters the telescope, bounces on the main mirror, hits a secondary mir
 
 We can make some assumptions that will make simulating the behaviour of the light easier, we can safely assume that the image won't be significally deformed before the instrument does what it needs, so the mirrors only will only cause loss of light due to the non-100% reflectivity.
 
-Keeping in mind that not every photon that enters the telescope hits the main mirror, since there might be a secondary in the way, however, since each mirror has an Efficiency value relating to the non-100% reflectivity, you could just subtract that "Secondary is in the way effect" to the efficiency valu. Both are just photons that never made it to the secondary.
+Keeping in mind that not every photon that enters the telescope hits the main mirror, since there might be a secondary in the way, however, since each mirror has an Efficiency value relating to the non-100% reflectivity, you could just subtract that "Secondary is in the way effect" to the efficiency value of the primary mirror. Both are just photons that never made it to the secondary.
+
+-------------------------------------------------------------------------
+
