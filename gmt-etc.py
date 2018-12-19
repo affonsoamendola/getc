@@ -9,14 +9,21 @@
 #OpticalElement
 #See if passlight is working correctly
 #
-#Create a parser for an opticalResponseFile (and a format for that file, for that matter)
-#
 #Add function for CCD random dark response.
 #Add function for atmospheric effect.
 #Add function to determine signal to noise ratio.
 
 import numpy as np
 import pysymphot as symphot
+
+
+def parseOpticalResponseFile(opticalResponseFilename):
+	#[opticalResponseFilename] = string (relative or absolute filename, please use relative, for the love of god.)
+	#Reads a .tab file containing the optical response of a certain optical element, two columns, 
+	#separated by a \t column 0 contains a wavelength, and column 1 contains the Reflectivity or Transmissivity, 
+	#on the element type.
+	
+	table = np.loadtxt(opticalResponseFilename, delimiter="\t", usecols=(0,1))
 
 class OpticalElement:
 	def __init__(self, opticalResponseFilename):
