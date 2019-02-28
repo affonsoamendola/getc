@@ -24,25 +24,53 @@ def parseOpticalResponseFile(opticalResponseFilename):
 	#on the element type.
 	
 	table = np.loadtxt(opticalResponseFilename, delimiter="\t", usecols=(0,1))
+	return table
 
-class OpticalElement:
+#end parseOpticalResponseFile
+
+class Optical_Element:
 	def __init__(self, opticalResponseFilename):
 		#[opticalResponseFilename] = string (relative or absolute filename, please use relative, for the love of god.)
 		#initializes an optical element, using an optical Response File
+
 		self.opticalResponse = parseOpticalResponseFile(opticalResponseFilename)
+	
 	#end __init__
 
-	def passLight(self, receivedField):
-		#[receivedField] = Field object.
-		#initializes a new field object that will be a modified version of the received field,
-		#the modification made will be based on the optical response of this optical element,
-		#interpolation will be used if there isnt data on the wavelength axis of the optical response
-		#table for a set wavelength on the received field.
-		self.field = Field(receivedField.resolution, receivedField.sizeX, receivedField.sizeY)
-		for wavelength in receivedField.count_table.keys():
-			self.field.Pythoncount_table[wavelength] = receivedField.count_table[wavelength]*interp(opticalResponse, wavelength)
+	def passLight(self, spectrum):
+		#[spectrum_counts] = Spectrum Table (x value = wavelength, y value = counts)
+ 
+		return_spectrum = Spectrum()
+
+		for wavelength in spectrum:
+			return_spectrum.set_counts_for_wavelength(wavelength, spectrum.get_counts_for_wavelength(wavelength)*interp(opticalResponse, wavelength))
+		
+		return return_spectrum
+
 	#end passLight
-#end OpticalElement
+#end Optical_Element
+
+class Instrument:
+	Optical_Element_List = []
+
+	def __init__(self):
+
+	def Add_Optical_Element(self, Optical_Element):
+		Optical_Element_List.append(Optical_Element)
+
+	def Pass_Light(self, start_spectrum):
+
+	def Calculate_SNR(self):
+
+class Spectrum:
+	def __init__(self):
+		self.spectrum_wavelength = []
+		self.spectrum_counts = []
+
+	def get_counts_for_wavelength(self, wavelength):
+
+	def load_spectrum_from_file(self, filename):
+
 
 class Field:
 	def __init__(self, resolution, sizeX, sizeY):
@@ -86,8 +114,9 @@ class Field:
 				distribution[i][j] = height * np.exp( (-4.) * np.log(2.) * ((float(i)-posX)**2.+(float(j)-posY)**2.)  / fwhm**2.  )
 	#end make_gaussian
 #end Field 
-#
-#	Affonso was here.
+
+
+#	Affonso was here,
 #	Be excellent to each other.
 # 
 #	1:47:55, Wednesday, 28th of November, 2018, São Paulo, Brasil, Earth. 
