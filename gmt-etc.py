@@ -3,120 +3,138 @@
 
 #GMT Exposure Time Calculator
 
-#TODO
-#Mostly everything
-#
-#OpticalElement
-#See if passlight is working correctly
-#
-#Add function for CCD random dark response.
-#Add function for atmospheric effect.
-#Add function to determine signal to noise ratio.
-
 import numpy as np
-import pysymphot as symphot
 
+from astropy.modeling.blackbody import blackbody_lambda
+from astropy.constants import h, c
+from astropy import units
 
-def parseOpticalResponseFile(opticalResponseFilename):
-	#[opticalResponseFilename] = string (relative or absolute filename, please use relative, for the love of god.)
-	#Reads a .tab file containing the optical response of a certain optical element, two columns, 
-	#separated by a \t column 0 contains a wavelength, and column 1 contains the Reflectivity or Transmissivity, 
-	#on the element type.
-	
-	table = np.loadtxt(opticalResponseFilename, delimiter="\t", usecols=(0,1))
-	return table
+VERSION = 0.01
 
-#end parseOpticalResponseFile
+SOURCE_TYPE = "point"
+OBSERVATION_MODE = "imaging"
 
-class Optical_Element:
-	def __init__(self, opticalResponseFilename):
-		#[opticalResponseFilename] = string (relative or absolute filename, please use relative, for the love of god.)
-		#initializes an optical element, using an optical Response File
+flux_input_type = "a"
 
-		self.opticalResponse = parseOpticalResponseFile(opticalResponseFilename)
-	
-	#end __init__
+temperature = units.K * 5000
 
-	def passLight(self, spectrum):
-		#[spectrum_counts] = Spectrum Table (x value = wavelength, y value = counts)
- 
-		return_spectrum = Spectrum()
+flux_template = ""
+redshift = 0
 
-		for wavelength in spectrum:
-			return_spectrum.set_counts_for_wavelength(wavelength, spectrum.get_counts_for_wavelength(wavelength)*interp(opticalResponse, wavelength))
-		
-		return return_spectrum
+reference_wavelength = 0
+power_law_index = 0
+reference_flux = 0
 
-	#end passLight
-#end Optical_Element
+line_central_wavelength = 0
+line_fwhm = 0
+line_total_flux = 0
 
-class Instrument:
-	Optical_Element_List = []
+observed_wavelength = units.micrometer * 500
 
-	def __init__(self):
+filter_band_width = 0
+spectral_bin = 0
 
-	def Add_Optical_Element(self, Optical_Element):
-		Optical_Element_List.append(Optical_Element)
+telescope_surface = 0
+exposure_time = 0
+efficiency = 0
 
-	def Pass_Light(self, start_spectrum):
+flux_unit = units.joule * (units.second**-1) * (units.meter**-2) * (units.micrometer**-1) * (units.sr**-1)
 
-	def Calculate_SNR(self):
+def user_input():
+	global SOURCE_TYPE
+	global OBSERVATION_MODE
 
-class Spectrum:
-	def __init__(self):
-		self.spectrum_wavelength = []
-		self.spectrum_counts = []
+	global flux_input_type
+	global temperature
 
-	def get_counts_for_wavelength(self, wavelength):
+	global flux_template
+	global redshift
+	global reference_wavelength
+	global power_law_index
+	global reference_flux
+	global line_central_wavelength
+	global line_fwhm
+	global line_total_flux
+	global observed_wavelength
 
-	def load_spectrum_from_file(self, filename):
+	global filter_band_width
+	global spectral_bin
 
+	global telescope_surface
+	global exposure_time
+	global efficiency
 
-class Field:
-	def __init__(self, resolution, sizeX, sizeY):
-		#initializes field object, with an array of size/resolution on x and y
-		#[resolution] = pixels/arcmin
-		#[sizeX] and [sizeY] = arcmin
+	print("--------------------------------------------------------------")
+	print("GMT-ETC ver. ", VERSION)
+	print("Made by Affonso Amendola, under request and orientation of Alessandro Ederoclite.")
+	print("")
+	print("Be Excellent to Each Other.")
+	print("--------------------------------------------------------------")
 
-		self.resolution = resolution
-		self.sizeX = sizeX
-		self.sizeY = sizeY
+	OBSERVATION_MODE = input("Choose the type of observation being made (imaging or spectroscopy) = ")
+	SOURCE_TYPE = input("Choose the type of source being observed (point or extended) = ")
 
-		self.count_table = {} 
+	flux_input_type = input("Choose a type of flux input (blackbody, template, power_law, continuum or single_line_source) = ")
 
-		self.lengthX = int(resolution*sizeX)
-		self.lengthY = int(resolution*sizeY)
-	#end __init__
+	if(flux_input_type == "blackbody"):
+		temperature = units.K * float(input("BLACKBODY: Choose the object temperature (K) = "))
+	elif(flux_input_type == "template"):
+		flux_template = input ("TEMPLATE: Enter the flux template file location = ")
+		redshift = (units.m/units.m) * float(input("TEMPLATE: Enter a redshift to shift template = "))
+	elif(flux_input_type == "power_law"):
+		reference_wavelength = units.micrometer * float(input("POWER LAW: Enter the reference wavelength = "))
+		power_law_index = (units.m/units.m) * float(input("POWER LAW: Enter the power law index = "))
+		reference_flux = flux_unit * float(input("POWER LAW: Enter reference flux = "))
+	elif(flux_input_type == "continuum"):
+		reference_flux = flux_unit * float(input("CONTINUUM: Enter reference flux = "))
+	elif(flux_input_type == "single_line_source"):
+		line_central_wavelength = units.micrometer * float(input("SLS: Enter line central wavelength = "))
+		line_fwhm = units.micrometer * float(input("SLS: Enter line full width at half maximum = "))
+		line_total_flux = flux_unit * float(input("SLS: Enter line total flux = "))
 
-	def create_gaussian_star(self, posX, posY, fwhm, spectrum):
-		# [spectrum] = Pysynphot Source Object
-		# [posX]. [posY] = pixel position (int)
-		# 
-		# Convolves a gaussian bidimensional image with a template spectrum, basically
-		# the star with that spectrum at (posX, posY) in the field.
-		# 
-		# I think thats how it works...
+	observed_wavelength = units.micrometer * float(input("Observed at wavelength (um) = "))
 
-		star_count_table = {}
-		gaussian_image = create_gaussian(self.lengthX, self.lengthY, posX, posY, fwhm, 1.)
+	if(OBSERVATION_MODE == "imaging"):
+		filter_band_width = (units.micrometer * units.bin**-1) * float(input("Enter the filter band width (um) = "))
+	elif(OBSERVATION_MODE == "spectroscopy"):
+		spectral_bin = units.micrometer * float(input("Enter the spectral bin (um/bin)"))
 
-		for wavelength in spectrum.wave:
-			star_count_table[wavelength] = gaussian_image*spectrum.sample(wavelength)
-			count_table[wavelength] += star_count_table[wavelength]
-	#end create_gaussian_star
+	telescope_surface = (units.meter**2) * float(input("Enter the telescope surface area (m²) = "))
+	exposure_time = units.second * float(input("Enter the exposure time (s) = "))
+	efficiency = (units.m/units.m) * float(input("Enter the telescope efficiency = "))
 
-	def create_gaussian(self, sizeX, sizeY, posX, posY, fwhm, height):
-		distribution = np.array(np.zeros((sizeX, sizeY)))
-		#creates a 2d gaussian distribution with fwhm and height on the field, at the pos(x,y).
-		for i in range(sizeX):
-			for j in range(sizeY):
+def photon_energy(wavelength_um):
+	#Takes a wavelength (in um), and returns the energy of a single photon of that wavelength
+	P = (h * c) / wavelength_um
+	return P * (units.ph**-1)
 
-				distribution[i][j] = height * np.exp( (-4.) * np.log(2.) * ((float(i)-posX)**2.+(float(j)-posY)**2.)  / fwhm**2.  )
-	#end make_gaussian
-#end Field 
+def electrons_per_bin():
 
+	if(OBSERVATION_MODE == "imaging"):
+		delta = filter_band_width
 
-#	Affonso was here,
+	elif(OBSERVATION_MODE == "spectroscopy"):
+		delta = spectral_bin
+
+	if(SOURCE_TYPE == "point"):
+		omega = 1 * units.sr
+
+	elif(SOURCE_TYPE == "extended"):
+		omega = solid_angle * units.sr
+
+	if(flux_input_type == "blackbody"):
+		incident_flux = blackbody_lambda(observed_wavelength, temperature)
+	elif(flux_input_type == "continuum"):
+		incident_flux = reference_flux
+
+	print("CALCULATING N")
+	N = (incident_flux * delta * exposure_time * efficiency * telescope_surface * omega) / photon_energy(observed_wavelength)
+	return N.decompose()
+
+user_input()
+print(electrons_per_bin())
+
+#	Affonso is still here,
 #	Be excellent to each other.
 # 
-#	1:47:55, Wednesday, 28th of November, 2018, São Paulo, Brasil, Earth. 
+#   21:20, Thor's Day, April 4th, 2019, São Paulo, Brasil, Earth.
