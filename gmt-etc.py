@@ -10,14 +10,43 @@ from astropy.constants import h, c
 from astropy import units
 
 VERSION = 0.01
+DEBUG = True
 
 FLUX_UNIT = units.joule * (units.second**-1) * (units.meter**-2) * (units.micrometer**-1) * (units.sr**-1)
 
+class TemplateSpectra:
+	def __init__(self, file_name):
+		self.m_file_name = file_name
+		self.m_angstrom = []
+		self.m_flux = []
+
+		with open(self.m_file_name, 'r') as f:
+			for line in f:
+				if(line[0] != '#'):
+					#Ignore Comments
+					values = line.split()
+
+					if(DEBUG): print(values[0], values[1])
+
+					self.m_angstrom.append(float(values[0]))
+					self.m_flux.append(float(values[1])) 
+
+	def get_flux_at(self, wavelength_um):
+
+		wavelength_ang = wavelength_um * float(units.micrometer.to(units.angstrom))
+		flux = np.interp(wavelength_ang, self.m_angstrom, self.m_flux)
+
+		if(DEBUG): print("DEBUG: Template Spectra flux at : ", wavelength_um, ", is : ", flux)
+
+		return flux
+
 class OpticalElement:
 	def __init__(self, element_name, optical_response_table_file):
-		self.m_name = ""
+		self.m_name = element_name
 		self.m_response_angstrom = []
 		self.m_response_efficiency = []
+
+		if(DEBUG): print("DEBUG: New Optical Element ", self.m_name)
 
 		#Opens optical_response_table_file
 		with open(optical_response_table_file, 'r') as f:
@@ -25,6 +54,9 @@ class OpticalElement:
 				if(line[0] != '#'):
 					#Ignore Comments comments
 					values = line.split()
+
+					if(DEBUG): print(values[0], values[1])
+
 					self.m_response_angstrom.append(float(values[0]))
 					self.m_response_efficiency.append(float(values[1])) 
 
@@ -32,6 +64,8 @@ class OpticalElement:
 
 		wavelength_ang = wavelength_um * float(units.micrometer.to(units.angstrom))
 		efficiency = np.interp(wavelength_ang, self.m_response_angstrom, self.m_response_efficiency)
+
+		if(DEBUG): print("DEBUG: Optical Element ", self.m_name, " efficiency at ", wavelength_um, ", is :", efficiency)
 
 		return efficiency
 
@@ -65,10 +99,15 @@ class ObservationConfiguration:
 class InstrumentConfiguration:
 	def __init__(self, config_file):
 	#Uses a configuration file to setup all the currently installed mirrors and stuff on the telescope.
+		if(DEBUG): print("\nDEBUG: Loading Instrument Configuration from file ", config_file)
+
 		self.m_element_list = []
 		with open(config_file, 'r') as f:
 			for line in f:
 				values = line.split()
+
+				if(DEBUG): print("\n", values[0], values[1])
+				
 				new_optical_element = OpticalElement( values[0], values[1] )
 				self.m_element_list.append( new_optical_element )
 
@@ -96,8 +135,9 @@ def user_input():
 
 	elif(user_config.flux_input_type == "template"):
 
-		user_config.flux_template = input ("TEMPLATE: Enter the flux template file location = ")
+		user_config.flux_template_file = input ("TEMPLATE: Enter the flux template file location = ")
 		user_config.redshift = (units.m/units.m) * float(input("TEMPLATE: Enter a redshift to shift template = "))
+		user_config.flux_template = TemplateSpectra(user_config.flux_template_file)
 	
 	elif(user_config.flux_input_type == "power_law"):
 
@@ -150,6 +190,8 @@ def electrons_per_bin(observation_config, instrument_config):
 		incident_flux = blackbody_lambda(observation_config.observed_wavelength, observation_config.temperature)
 	elif(observation_config.flux_input_type == "continuum"):
 		incident_flux = observation_config.reference_flux
+	elif(observation_config.flux_input_type == "template"):
+		incident_flux = observation_config.flux_template.get_flux_at(observation_config.observed_wavelength)
 
 	print("CALCULATING N")
 	N = (incident_flux * delta * observation_config.exposure_time * instrument_config.get_efficiency_at(observation_config.observed_wavelength) * \
