@@ -1,18 +1,26 @@
-#Copyright 2018 Affonso Amendola
+#Copyright 2018-2019 Affonso Amendola
 #Distributed under GPL V3 License, check the LICENSE file for more info.
 
-#GMT Exposure Time Calculator
-
+#Generic Exposure Time Calculator
+#GeTC
 import numpy as np
 
-from astropy.modeling.blackbody import blackbody_lambda
+from astropy.modeling.models import BlackBody
 from astropy.constants import h, c
 from astropy import units
 
-VERSION = 0.01
+VERSION = 0.03
 DEBUG = True
 
 FLUX_UNIT = units.joule * (units.second**-1) * (units.meter**-2) * (units.micrometer**-1) * (units.sr**-1)
+
+zero_point_reference = {}
+
+zero_point_reference["U"] = 4.18023e-09
+zero_point_reference["B"] = 6.60085e-09
+zero_point_reference["V"] = 3.60994e-09
+zero_point_reference["R"] = 2.28665e-09
+zero_point_reference["I"] = 1.22603e-09
 
 class TemplateSpectra:
 	def __init__(self, file_name):
@@ -57,12 +65,12 @@ class OpticalElement:
 
 					if(DEBUG): print(values[0], values[1])
 
-					self.m_response_angstrom.append(float(values[0]))
+					self.m_response_angstrom.append(float(values[0]) * units.angstrom)
 					self.m_response_efficiency.append(float(values[1])) 
 
 	def get_efficiency_at(self, wavelength_um):
 
-		wavelength_ang = wavelength_um * float(units.micrometer.to(units.angstrom))
+		wavelength_ang = wavelength_um.to(units.angstrom)
 		efficiency = np.interp(wavelength_ang, self.m_response_angstrom, self.m_response_efficiency)
 
 		if(DEBUG): print("DEBUG: Optical Element ", self.m_name, " efficiency at ", wavelength_um, ", is :", efficiency)
@@ -78,11 +86,17 @@ class ObservationConfiguration:
 	temperature = units.K * 5000
 
 	flux_template = ""
-	redshift = 0
+	redshift = 0	
+
+	object_magnitude = 0
+	#reference_filter = "U"
 
 	reference_wavelength = 0
 	power_law_index = 0
 	reference_flux = 0
+
+	primary_mirror_diameter = 0
+	primary_mirror_focal_length = 0
 
 	line_central_wavelength = 0
 	line_fwhm = 0
@@ -119,13 +133,18 @@ class InstrumentConfiguration:
 		for optical_element in self.m_element_list:
 			efficiency = efficiency * optical_element.get_efficiency_at(wavelength_um)
 
-		return (units.m/units.m) * efficiency
+		return efficiency
 		
 def user_input():
 	user_config = ObservationConfiguration()
 
 	user_config.OBSERVATION_MODE = input("Choose the type of observation being made (imaging or spectroscopy) = ")
 	user_config.SOURCE_TYPE = input("Choose the type of source being observed (point or extended) = ")
+
+	user_config.object_magnitude = input("Enter object apparent magnitude = ")
+	#user_config.reference_filter = input("Enter reference band (U, B, V, R, I) = ")
+
+	user_config.primary_mirror_focal_length = units.mm * input("Enter primary mirror focal length (in mm) = ")	
 
 	user_config.flux_input_type = input("Choose a type of flux input (blackbody, template, power_law, continuum or single_line_source) = ")
 
@@ -158,7 +177,7 @@ def user_input():
 	user_config.observed_wavelength = units.micrometer * float(input("Observed at wavelength (um) = "))
 
 	if(user_config.OBSERVATION_MODE == "imaging"):
-		user_config.filter_band_width = (units.micrometer * units.bin**-1) * float(input("Enter the filter band width (um) = "))
+		user_config.filter_band_width = (units.micrometer) * float(input("Enter the filter band width (um) = "))
 	elif(OBSERVATION_MODE == "spectroscopy"):
 		user_config.spectral_bin = units.micrometer * float(input("Enter the spectral bin (um/bin)"))
 
@@ -170,7 +189,7 @@ def user_input():
 def photon_energy(wavelength_um):
 	#Takes a wavelength (in um), and returns the energy of a single photon of that wavelength
 	P = (h * c) / wavelength_um
-	return P * (units.ph**-1)
+	return (P * (units.ph**-1)).decompose()
 
 def electrons_per_bin(observation_config, instrument_config):
 	
@@ -181,17 +200,27 @@ def electrons_per_bin(observation_config, instrument_config):
 		delta = observation_config.spectral_bin
 
 	if(observation_config.SOURCE_TYPE == "point"):
-		omega = 1 * units.sr
+		omega = (206265 * 15 * units.micrometer)/(1000 * observation_config.primary_mirror_focal_length) * (units.arcsec**2) * (units.pix **-1) 
 
 	elif(observation_config.SOURCE_TYPE == "extended"):
 		omega = observation_config.solid_angle * units.sr
 
 	if(observation_config.flux_input_type == "blackbody"):
-		incident_flux = blackbody_lambda(observation_config.observed_wavelength, observation_config.temperature)
+		blackbody_model = BlackBody(temperature=observation_config.temperature)
+		incident_flux = blackbody_model(observation_config.observed_wavelength)
 	elif(observation_config.flux_input_type == "continuum"):
 		incident_flux = observation_config.reference_flux
 	elif(observation_config.flux_input_type == "template"):
 		incident_flux = observation_config.flux_template.get_flux_at(observation_config.observed_wavelength)
+
+	print("N EQUALS = ")
+	print("INCIDENT FLUX <- ", incident_flux)
+	print("* DELTA <- ", delta)
+	print("* exposure_time <- ", observation_config.exposure_time)
+	print("* efficiency <- ", instrument_config.get_efficiency_at(observation_config.observed_wavelength))
+	print("* surface <- ", observation_config.telescope_surface)
+	print("* omega <- ", omega)
+	print("/ photon energy <- ", photon_energy(observation_config.observed_wavelength))
 
 	print("CALCULATING N")
 	N = (incident_flux * delta * observation_config.exposure_time * instrument_config.get_efficiency_at(observation_config.observed_wavelength) * \
@@ -200,7 +229,7 @@ def electrons_per_bin(observation_config, instrument_config):
 
 def main():
 	print("--------------------------------------------------------------")
-	print("GMT-ETC ver. ", VERSION)
+	print("GeTC ver. ", VERSION)
 	print("Made by Affonso Amendola, under request and orientation of Alessandro Ederoclite.")
 	print("")
 	print("Be Excellent to Each Other.")
