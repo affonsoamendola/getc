@@ -1,0 +1,15 @@
+JPAS
+
+56 filters
+2.55 telescope JST
+mag_ab 22 and 23.5 up to 24 for the bb filters
+
+Eff Collecting area 3.75m2
+F# 3.5
+Focal length 9098 mm
+Plate Scale 22.57 arcsec mm-1
+
+"For the 56 J-PAS filters and the u filter each independent exposure was of 120 secs, while each exposure for the broad brands g, r and i was of 30 secs, to avoid saturations."
+
+Fluxes in units of 10e-19 ergs s-1 cm-2 Angstrom-1
+Fluxes in units of 10e-30 ergs s-1 cm-2 Hz-1
