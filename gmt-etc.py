@@ -112,6 +112,8 @@ class ObservationConfiguration:
 	read_out_noise = (units.electron) * 3.4 #JPAS-Pathfinder
 	dark_current = (units.electron * (units.s**-1)) * 0.0008 #JPAS-Pathfinder
 
+	number_of_exposures = 1
+
 	sky_mag = 0
 	airmass = 1
 
@@ -256,15 +258,15 @@ def signal_to_noise_ratio(observation_config, instrument_config):
 
 	n_obj = n_obj.decompose() * (units.electron) / (units.ph)
 
-	signal = n_obj
+	signal = n_obj * observation_config.number_of_exposures
 
-	n_sky = sky_contribution(observation_config, instrument_config)
+	n_sky = sky_contribution(observation_config, instrument_config) * observation_config.number_of_exposures
 
 	print("N Object = ", n_obj)
 	print("N Sky = ", n_sky)
 
 	noise = np.sqrt(n_obj + n_sky + (observation_config.read_out_noise**2)*(units.electron**-1) + \
-					observation_config.dark_current * observation_config.exposure_time)*(units.electron**(1/2))
+					observation_config.dark_current * observation_config.number_of_exposures * observation_config.exposure_time)*(units.electron**(1/2))
 
 	return signal, noise
 

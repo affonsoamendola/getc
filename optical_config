@@ -1,3 +1,1 @@
-T80-M1 optics/T80_M1_Reflectivity_Angstrom.tab 1
-T80-M2 optics/T80_M2_Reflectivity_Angstrom.tab 1
-gSDSS optics/filters/gSDSS.dat 1
+COMPLETE_J0600 optics/filters/J-PAS/OAJ_JPAS.J0600.dat 1
