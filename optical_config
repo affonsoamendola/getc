@@ -1,1 +1,8 @@
-COMPLETE_J0600 optics/filters/J-PAS/OAJ_JPAS.J0600.dat 1
+# Optical Parameters
+filter_list JPAS
+primary_mirror_focal_length 9098
+effective_collecting_area 3.89
+read_out_noise 4
+dark_current 0.001
+
+# Optical Path

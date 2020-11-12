@@ -9,10 +9,76 @@ from astropy.modeling.models import BlackBody
 from astropy.constants import h, c
 from astropy import units
 
-VERSION = 0.04
+VERSION = 0.05
 DEBUG = False
 
 FLUX_UNIT = units.joule * (units.second**-1) * (units.meter**-2) * (units.micrometer**-1)
+
+FILTERS = {
+	"JPAS":
+	{
+		"gSDSS":"optics/filters/J-PAS/OAJ_JPAS.gSDSS.dat",
+		"iSDSS":"optics/filters/J-PAS/OAJ_JPAS.iSDSS.dat",
+		"J0378":"optics/filters/J-PAS/OAJ_JPAS.J0378.dat",
+		"J0390":"optics/filters/J-PAS/OAJ_JPAS.J0390.dat",
+		"J0400":"optics/filters/J-PAS/OAJ_JPAS.J0400.dat",
+		"J0410":"optics/filters/J-PAS/OAJ_JPAS.J0410.dat",
+		"J0420":"optics/filters/J-PAS/OAJ_JPAS.J0420.dat",
+		"J0430":"optics/filters/J-PAS/OAJ_JPAS.J0430.dat",
+		"J0440":"optics/filters/J-PAS/OAJ_JPAS.J0440.dat",
+		"J0450":"optics/filters/J-PAS/OAJ_JPAS.J0450.dat",
+		"J0460":"optics/filters/J-PAS/OAJ_JPAS.J0460.dat",
+		"J0470":"optics/filters/J-PAS/OAJ_JPAS.J0470.dat",
+		"J0480":"optics/filters/J-PAS/OAJ_JPAS.J0480.dat",
+		"J0490":"optics/filters/J-PAS/OAJ_JPAS.J0490.dat",
+		"J0500":"optics/filters/J-PAS/OAJ_JPAS.J0500.dat",
+		"J0510":"optics/filters/J-PAS/OAJ_JPAS.J0510.dat",
+		"J0520":"optics/filters/J-PAS/OAJ_JPAS.J0520.dat",
+		"J0530":"optics/filters/J-PAS/OAJ_JPAS.J0530.dat",
+		"J0540":"optics/filters/J-PAS/OAJ_JPAS.J0540.dat",
+		"J0550":"optics/filters/J-PAS/OAJ_JPAS.J0550.dat",
+		"J0560":"optics/filters/J-PAS/OAJ_JPAS.J0560.dat",
+		"J0570":"optics/filters/J-PAS/OAJ_JPAS.J0570.dat",
+		"J0580":"optics/filters/J-PAS/OAJ_JPAS.J0580.dat",
+		"J0590":"optics/filters/J-PAS/OAJ_JPAS.J0590.dat",
+		"J0600":"optics/filters/J-PAS/OAJ_JPAS.J0600.dat",
+		"J0610":"optics/filters/J-PAS/OAJ_JPAS.J0610.dat",
+		"J0620":"optics/filters/J-PAS/OAJ_JPAS.J0620.dat",
+		"J0630":"optics/filters/J-PAS/OAJ_JPAS.J0630.dat",
+		"J0640":"optics/filters/J-PAS/OAJ_JPAS.J0640.dat",
+		"J0650":"optics/filters/J-PAS/OAJ_JPAS.J0650.dat",
+		"J0660":"optics/filters/J-PAS/OAJ_JPAS.J0660.dat",
+		"J0670":"optics/filters/J-PAS/OAJ_JPAS.J0670.dat",
+		"J0680":"optics/filters/J-PAS/OAJ_JPAS.J0680.dat",
+		"J0690":"optics/filters/J-PAS/OAJ_JPAS.J0690.dat",
+		"J0700":"optics/filters/J-PAS/OAJ_JPAS.J0700.dat",
+		"J0710":"optics/filters/J-PAS/OAJ_JPAS.J0710.dat",
+		"J0720":"optics/filters/J-PAS/OAJ_JPAS.J0720.dat",
+		"J0730":"optics/filters/J-PAS/OAJ_JPAS.J0730.dat",
+		"J0740":"optics/filters/J-PAS/OAJ_JPAS.J0740.dat",
+		"J0750":"optics/filters/J-PAS/OAJ_JPAS.J0750.dat",
+		"J0760":"optics/filters/J-PAS/OAJ_JPAS.J0760.dat",
+		"J0770":"optics/filters/J-PAS/OAJ_JPAS.J0770.dat",
+		"J0780":"optics/filters/J-PAS/OAJ_JPAS.J0780.dat",
+		"J0790":"optics/filters/J-PAS/OAJ_JPAS.J0790.dat",
+		"J0800":"optics/filters/J-PAS/OAJ_JPAS.J0800.dat",
+		"J0810":"optics/filters/J-PAS/OAJ_JPAS.J0810.dat",
+		"J0820":"optics/filters/J-PAS/OAJ_JPAS.J0820.dat",
+		"J0830":"optics/filters/J-PAS/OAJ_JPAS.J0830.dat",
+		"J0840":"optics/filters/J-PAS/OAJ_JPAS.J0840.dat",
+		"J0850":"optics/filters/J-PAS/OAJ_JPAS.J0850.dat",
+		"J0860":"optics/filters/J-PAS/OAJ_JPAS.J0860.dat",
+		"J0870":"optics/filters/J-PAS/OAJ_JPAS.J0870.dat",
+		"J0880":"optics/filters/J-PAS/OAJ_JPAS.J0880.dat",
+		"J0890":"optics/filters/J-PAS/OAJ_JPAS.J0890.dat",
+		"J0900":"optics/filters/J-PAS/OAJ_JPAS.J0900.dat",
+		"J0910":"optics/filters/J-PAS/OAJ_JPAS.J0910.dat",
+		"J1007":"optics/filters/J-PAS/OAJ_JPAS.J1007.dat",
+		"rSDSS":"optics/filters/J-PAS/OAJ_JPAS.rSDSS.dat",
+		"u":"optics/filters/J-PAS/OAJ_JPAS.u.dat",
+		"uJava":"optics/filters/J-PAS/OAJ_JPAS.uJava.dat"
+	}
+}
 
 #class TemplateSpectra:
 	#	def __init__(self, file_name):
@@ -41,7 +107,7 @@ FLUX_UNIT = units.joule * (units.second**-1) * (units.meter**-2) * (units.microm
 	#		return flux
 
 class OpticalElement:
-	def __init__(self, element_name, optical_response_table_file, transmittance=False):
+	def __init__(self, element_name, optical_response_table_file, transmittance=True):
 		self.m_name = element_name
 		self.m_response_angstrom = []
 		self.m_response_efficiency = []
@@ -95,7 +161,6 @@ class ObservationConfiguration:
 	#reference_flux = 0
 
 	#primary_mirror_diameter = 0
-	primary_mirror_focal_length = units.mm * 9098 #mm JST/T250
 
 	#line_central_wavelength = 0
 	#line_fwhm = 0
@@ -106,32 +171,70 @@ class ObservationConfiguration:
 	filter_band_width = 0
 	#spectral_bin = 0
 
-	telescope_surface = (units.m**2) * 3.75 #m2 JST/T250
 	exposure_time = (units.s) * 0
-
-	read_out_noise = (units.electron) * 3.4 #JPAS-Pathfinder
-	dark_current = (units.electron * (units.s**-1)) * 0.0008 #JPAS-Pathfinder
 
 	number_of_exposures = 1
 
 	sky_mag = 0
 	airmass = 1
 
+def parse_optical_config_file(config_file, instrument_config):
+	for line in config_file:
+		if(line[0] == '#'):
+			continue
+
+		values = line.split()
+		
+		if(len(values) == 0):
+			continue
+
+		if(values[0] == "filter_list"):
+			instrument_config.filter_list = values[1]
+			if(DEBUG): print("DEBUG: Filter List = ", instrument_config.filter_list)
+			continue
+
+		if(values[0] == "primary_mirror_focal_length"):
+			instrument_config.primary_mirror_focal_length = float(values[1]) * units.mm
+			if(DEBUG): print("DEBUG: Primary focal length = ", instrument_config.primary_mirror_focal_length)
+			continue
+
+		if(values[0] == "effective_collecting_area"):
+			instrument_config.effective_collecting_area = float(values[1]) * (units.m**2)
+			if(DEBUG): print("DEBUG: Effective Collecting Area = ", instrument_config.effective_collecting_area)
+			continue
+
+		if(values[0] == "read_out_noise"):
+			instrument_config.read_out_noise = float(values[1]) * (units.electron)
+			if(DEBUG): print("DEBUG: Read out noise = ", instrument_config.read_out_noise)
+			continue	
+
+		if(values[0] == "dark_current"):
+			instrument_config.dark_current = float(values[1]) * units.electron * (units.second**-1)
+			if(DEBUG): print("DEBUG: Dark current = ", instrument_config.dark_current)
+			continue
+
+		new_optical_element = OpticalElement( values[0], values[1])
+		instrument_config.m_element_list.append( new_optical_element )
+
 class InstrumentConfiguration:
+	filter_list = ""
+	primary_mirror_focal_length = 0.0
+	effective_collecting_area = 0.0
+
+	read_out_noise = 0.0
+	dark_current = 0.0
+
 	def __init__(self, config_file):
 	#Uses a configuration file to setup all the currently installed mirrors and stuff on the telescope.
 		if(DEBUG): print("\nDEBUG: Loading Instrument Configuration from file ", config_file)
 
 		self.m_element_list = []
 		with open(config_file, 'r') as f:
-			for line in f:
-				values = line.split()
-				transmittance = (values[2]=="1")
+			parse_optical_config_file(f, self)
 
-				if(DEBUG): print("\n", values[0], values[1], transmittance)
-				
-				new_optical_element = OpticalElement( values[0], values[1], transmittance=transmittance)
-				self.m_element_list.append( new_optical_element )
+	def add_filter(self, filter_name, filter_location):
+		new_optical_element = OpticalElement( filter_name, filter_location)
+		self.m_element_list.append( new_optical_element )
 
 	def get_efficiency_at(self, wavelength_um):
 	#Takes a value of wavelength in micrometer and returns the telescope efficiency 
@@ -144,7 +247,24 @@ class InstrumentConfiguration:
 		return efficiency
 		
 def user_input():
+	instrument_config = InstrumentConfiguration("optical_config")
 	user_config = ObservationConfiguration()
+
+	filter_input = False
+
+	while (filter_input == False):
+		filter_name = input("Enter installed filter (Or type \"list\" to list all available filters) = ")
+
+		if(filter_name == "list"):
+			for key in FILTERS[instrument_config.filter_list]:
+				print(key)
+
+		filter_location = FILTERS[instrument_config.filter_list].get(filter_name, "")
+
+		if(filter_location != ""):
+			instrument_config.add_filter(filter_name, filter_location)
+			filter_input = True
+
 
 #	user_config.OBSERVATION_MODE = input("Choose the type of observation being made (imaging or spectroscopy) = ")
 #	user_config.SOURCE_TYPE = input("Choose the type of source being observed (point or extended) = ")
@@ -188,13 +308,13 @@ def user_input():
 	elif(OBSERVATION_MODE == "spectroscopy"):
 		user_config.spectral_bin = units.micrometer * float(input("Enter the spectral bin (um/bin)"))
 
-#	user_config.telescope_surface = (units.meter**2) * float(input("Enter the telescope surface area (m²) = "))
+#	user_config.effective_collecting_area = (units.meter**2) * float(input("Enter the telescope surface area (m²) = "))
 	user_config.exposure_time = units.second * float(input("Enter the exposure time (s) = "))
 
 	user_config.sky_mag = units.ABmag * float(input("Enter sky contribution (magAB/arcsec^2) = "))
 	user_config.airmass = float(input("Enter airmass around observation = "))
 
-	return user_config
+	return user_config, instrument_config
 
 def photon_energy(wavelength_um):
 	#Takes a wavelength (in um), and returns the energy of a single photon of that wavelength
@@ -214,7 +334,7 @@ def sky_contribution(observation_config, instrument_config):
 	omega = 1
 
 	n_sky = (sky_flux * delta * observation_config.exposure_time * instrument_config.get_efficiency_at(observation_config.observed_wavelength) * \
-			observation_config.telescope_surface * omega) / photon_energy(observation_config.observed_wavelength)	
+			instrument_config.effective_collecting_area * omega) / photon_energy(observation_config.observed_wavelength)	
 
 	return n_sky.decompose() * (units.electron) / (units.ph)
 
@@ -249,12 +369,12 @@ def signal_to_noise_ratio(observation_config, instrument_config):
 	print("* delta <- ", delta)
 	print("* exposure_time <- ", observation_config.exposure_time)
 	print("* efficiency <- ", instrument_config.get_efficiency_at(observation_config.observed_wavelength))
-	print("* surface <- ", observation_config.telescope_surface)
+	print("* surface <- ", instrument_config.effective_collecting_area)
 	print("* omega <- ", omega)
 	print("/ photon energy <- ", photon_energy(observation_config.observed_wavelength))
 
 	n_obj = (incident_flux * delta * observation_config.exposure_time * instrument_config.get_efficiency_at(observation_config.observed_wavelength) * \
-			observation_config.telescope_surface * omega) / photon_energy(observation_config.observed_wavelength)
+			instrument_config.effective_collecting_area * omega) / photon_energy(observation_config.observed_wavelength)
 
 	n_obj = n_obj.decompose() * (units.electron) / (units.ph)
 
@@ -265,8 +385,8 @@ def signal_to_noise_ratio(observation_config, instrument_config):
 	print("N Object = ", n_obj)
 	print("N Sky = ", n_sky)
 
-	noise = np.sqrt(n_obj + n_sky + (observation_config.read_out_noise**2)*(units.electron**-1) + \
-					observation_config.dark_current * observation_config.number_of_exposures * observation_config.exposure_time)*(units.electron**(1/2))
+	noise = np.sqrt(n_obj + n_sky + (instrument_config.read_out_noise**2)*(units.electron**-1) + \
+					instrument_config.dark_current * observation_config.number_of_exposures * observation_config.exposure_time)*(units.electron**(1/2))
 
 	return signal, noise
 
@@ -279,9 +399,8 @@ def main():
 	print("Be Excellent to Each Other.")
 	print("-------------------------------------------")
 
-	instrument_config = InstrumentConfiguration("optical_config")
+	observation_config, instrument_config = user_input()
 
-	observation_config = user_input()
 	#Current_config is a ObservationConfiguration type, so its members are the current config, and user_input returns a
 	#new ObservationConfiguration instance with the users requested config
 	signal, noise = signal_to_noise_ratio(observation_config, instrument_config)
