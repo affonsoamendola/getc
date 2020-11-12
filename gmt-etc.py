@@ -310,6 +310,7 @@ def user_input():
 
 #	user_config.effective_collecting_area = (units.meter**2) * float(input("Enter the telescope surface area (m²) = "))
 	user_config.exposure_time = units.second * float(input("Enter the exposure time (s) = "))
+	user_config.number_of_exposures = int(input("Enter the number of exposures = "))
 
 	user_config.sky_mag = units.ABmag * float(input("Enter sky contribution (magAB/arcsec^2) = "))
 	user_config.airmass = float(input("Enter airmass around observation = "))
