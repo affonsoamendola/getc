@@ -1,18 +1,22 @@
+#!/bin/python3
 #Copyright 2018-2019 Affonso Amendola
 #Distributed under GPL V3 License, check the LICENSE file for more info.
 
 #Generic Exposure Time Calculator
 #GeTC
 import numpy as np
+import sys
 
 from astropy.modeling.models import BlackBody
 from astropy.constants import h, c
 from astropy import units
 
-VERSION = 0.05
+VERSION = 0.06
 DEBUG = False
 
 FLUX_UNIT = units.joule * (units.second**-1) * (units.meter**-2) * (units.micrometer**-1)
+
+CONFIG_FILE = "optical_config"
 
 FILTERS = {
 	"JPAS":
@@ -247,7 +251,13 @@ class InstrumentConfiguration:
 		return efficiency
 		
 def user_input():
-	instrument_config = InstrumentConfiguration("optical_config")
+
+	if(CONFIG_FILE == "optical_config"):
+		print("Using default configuration file.")
+	else:
+		print("Using \"" + CONFIG_FILE + "\" as the configuration file.")
+
+	instrument_config = InstrumentConfiguration(CONFIG_FILE)
 	user_config = ObservationConfiguration()
 
 	filter_input = False
@@ -400,6 +410,8 @@ def main():
 	print("Be Excellent to Each Other.")
 	print("-------------------------------------------")
 
+	parse_command_line()
+
 	observation_config, instrument_config = user_input()
 
 	#Current_config is a ObservationConfiguration type, so its members are the current config, and user_input returns a
@@ -409,6 +421,41 @@ def main():
 	print("Signal = ", signal)
 	print("Noise = ", noise)
 	print("S/N = ", signal/noise)
+
+def parse_command_line():
+
+	args = sys.argv[1:]
+
+
+	while(len(args) >= 1):
+		arg = args.pop()
+
+		if(arg == "-h" or arg == "--h" or arg == "-help" or arg == "--help" or arg == "-?"):
+			print_help()
+			exit()
+
+		if(arg == "-d" or arg == "--d" or arg == "--debug"):
+			global DEBUG
+			DEBUG = True
+			continue
+
+		if(arg.startswith("-") or arg.startswith("--")):
+			print ("Unknown options, type --help for help")
+			exit()
+
+		global CONFIG_FILE
+		CONFIG_FILE = arg
+
+
+
+def print_help():
+	print("Usage: ./gmt_etc.py [-h] [-d] [config_file]")
+	print("Options:")
+	print(" -h, --help, -? 	Prints this help message.")
+	print(" -d, --debug 		Enables debug messages.")
+	print("")
+	print(" config_file 		The name of the config file to use,")
+	print("                 	will default to \"optical_config\"")
 
 main()
 
