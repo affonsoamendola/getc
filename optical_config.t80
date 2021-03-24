@@ -8,4 +8,3 @@ dark_current 0.00008
 # Optical Path
 T80-M1 optics/T80_M1_Reflectivity_Angstrom.tab
 T80-M2 optics/T80_M2_Reflectivity_Angstrom.tab
-gSDSS optics/filters/gSDSS.dat

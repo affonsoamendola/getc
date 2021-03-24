@@ -19,6 +19,33 @@ FLUX_UNIT = units.joule * (units.second**-1) * (units.meter**-2) * (units.microm
 CONFIG_FILE = "optical_config"
 
 FILTERS = {
+    "JPLUS":
+    {
+        "J0378_full":"optics/filters/J-PLUS/OAJ_JPLUS.J0378.dat",
+        "J0378_filter":"optics/filters/J-PLUS/OAJ_JPLUS.F0378_filter.dat",
+        "J0395_full":"optics/filters/J-PLUS/OAJ_JPLUS.J0395.dat",
+        "J0395_filter":"optics/filters/J-PLUS/OAJ_JPLUS.F0395_filter.dat",
+        "J0410_full":"optics/filters/J-PLUS/OAJ_JPLUS.J0410.dat",
+        "J0410_filter":"optics/filters/J-PLUS/OAJ_JPLUS.F0410_filter.dat",
+        "J0430_full":"optics/filters/J-PLUS/OAJ_JPLUS.J0430.dat",
+        "J0430_filter":"optics/filters/J-PLUS/OAJ_JPLUS.F0430_filter.dat",
+        "J0515_full":"optics/filters/J-PLUS/OAJ_JPLUS.J0515.dat",
+        "J0515_filter":"optics/filters/J-PLUS/OAJ_JPLUS.F0515_filter.dat",
+        "J0660_full":"optics/filters/J-PLUS/OAJ_JPLUS.J0660.dat",
+        "J0660_filter":"optics/filters/J-PLUS/OAJ_JPLUS.F0660_filter.dat",
+        "J0861_full":"optics/filters/J-PLUS/OAJ_JPLUS.J0861.dat",
+        "J0861_filter":"optics/filters/J-PLUS/OAJ_JPLUS.F0861_filter.dat",
+        "gSDSS_full":"optics/filters/J-PLUS/OAJ_JPLUS.gSDSS.dat",
+        "gSDSS_filter":"optics/filters/J-PLUS/OAJ_JPLUS.gSDSS_filter.dat",
+        "iSDSS_full":"optics/filters/J-PLUS/OAJ_JPLUS.iSDSS.dat",
+        "iSDSS_filter":"optics/filters/J-PLUS/OAJ_JPLUS.iSDSS_filter.dat",
+        "rSDSS_full":"optics/filters/J-PLUS/OAJ_JPLUS.rSDSS.dat",
+        "rSDSS_filter":"optics/filters/J-PLUS/OAJ_JPLUS.rSDSS_filter.dat",
+        "uJAVA_full":"optics/filters/J-PLUS/OAJ_JPLUS.uJAVA.dat",
+        "uJAVA_filter":"optics/filters/J-PLUS/OAJ_JPLUS.uJAVA_filter.dat",
+        "zSDSS_full":"optics/filters/J-PLUS/OAJ_JPLUS.zSDSS.dat",
+        "zSDSS_filter":"optics/filters/J-PLUS/OAJ_JPLUS.zSDSS_filter.dat"
+    },
 	"JPAS":
 	{
 		"gSDSS":"optics/filters/J-PAS/OAJ_JPAS.gSDSS.dat",

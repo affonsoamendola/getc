@@ -1,0 +1,6 @@
+# Optical Parameters
+filter_list JPLUS
+primary_mirror_focal_length 3712
+effective_collecting_area 0.44
+read_out_noise 3.4
+dark_current 0.00008
