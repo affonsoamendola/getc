@@ -1,1 +1,1 @@
-# gmt-etc
+# GeTC
