@@ -1,0 +1,45 @@
+Using "optical_config.t80" as the configuration file.
+Enter installed filter (Or type "list" to list all available filters) = J0660_filter
+Enter object apparent magnitude = 18
+Observed at wavelength (um) = 0.66
+Enter the filter band width (um) = 0.02
+Enter the exposure time (s) = 10
+Enter the number of exposures = 1
+Enter sky contribution (magAB/arcsec^2) = 22
+Enter airmass around observation = 1.1
+incident_flux =  1.5766410573368661e-18 erg m / (cm2 Hz s2 um2)
+* delta <-  0.02 um
+* exposure_time <-  10.0 s
+* efficiency <-  0.7775827022223926
+* surface <-  0.44 m2
+* omega <-  1
+/ photon energy <-  3.009766450225649e-19 kg m2 / (ph s2)
+N Object =  358.45058876978106 electron
+N Sky =  9.003871702974324 electron
+Signal =  358.45058876978106 electron
+Noise =  19.46831426890257 electron
+S/N =  18.411999304035632
+
+--------------------------------------------------------
+
+Using "optical_config.t80.nomirrors" as the configuration file.
+Enter installed filter (Or type "list" to list all available filters) = J0660_full
+Enter object apparent magnitude = 18
+Observed at wavelength (um) = 0.66
+Enter the filter band width (um) = 0.02
+Enter the exposure time (s) = 10
+Enter the number of exposures = 1
+Enter sky contribution (magAB/arcsec^2) = 22
+Enter airmass around observation = 1.1
+incident_flux =  1.5766410573368661e-18 erg m / (cm2 Hz s2 um2)
+* delta <-  0.02 um
+* exposure_time <-  10.0 s
+* efficiency <-  0.5972
+* surface <-  0.44 m2
+* omega <-  1
+/ photon energy <-  3.009766450225649e-19 kg m2 / (ph s2)
+N Object =  275.29765129997594 electron
+N Sky =  6.915164349268646 electron
+Signal =  275.29765129997594 electron
+Noise =  17.13982542645183 electron
+S/N =  16.06187020289659

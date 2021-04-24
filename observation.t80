@@ -1,0 +1,8 @@
+filter J0660_filter
+apparent_magnitude 18
+wavelength 0.66
+width 0.02
+sky_mag 20
+airmass 1.1
+number_of_exposures 1
+exposure_time 1
